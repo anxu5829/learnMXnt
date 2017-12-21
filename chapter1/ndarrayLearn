@@ -1,0 +1,85 @@
+import os
+
+import numpy
+import pandas as pd
+
+
+import  mxnet.ndarray as nd
+import  mxnet.autograd as ag
+
+# nd array can auto grad:
+
+# support  z = f(x1+x2)
+x = nd.array([1,2])
+x.attach_grad()
+# z = 2*(x1 + x2)^2
+with ag.record():
+    y = x.sum()
+    y = y*y
+    z = 2*y
+
+
+z.backward()
+x.grad
+
+# also support z1 = f(x1) , z2 = f(x2) (point to point)
+with ag.record():
+    z = 2*x*x*nd.log(x)
+
+z.backward()
+x.grad
+
+
+
+# also support chain rule
+
+# without head_gradient
+x = nd.array([[1, 2], [3, 4]])
+x.attach_grad()
+with ag.record():
+    y = x * x
+    z = y * x * x
+z.backward()
+print(x.grad)
+
+
+# with head_gradient
+x = nd.array([[1, 2], [3, 4]])
+x.attach_grad()
+with ag.record():
+    y = x * x
+    z = y * x * x
+head_gradient1 = nd.array([[1, 2], [3, 4]])
+z.backward(head_gradient1)
+print(x.grad)
+
+# 或者说是u(z)，作者的意思应该是当z的函数更为复杂时（也就是u(z)），我们可以将du/dz当做参数传入z.backward。
+# equals  head_gradient1 *  x.grad
+
+
+
+# about multi x to multi y
+
+w = nd.array([1,2]).reshape((2,1))
+w.attach_grad()
+with ag.record():
+    x = nd.array([[1,2],[3,4]])
+    yhat = nd.dot(x,w)
+    y = nd.array([6,12]).reshape(yhat.shape)
+    loss = y - yhat
+loss.backward()
+w.grad
+
+
+
+
+
+
+
+
+
+
+
+
+
+
