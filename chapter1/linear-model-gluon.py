@@ -51,6 +51,7 @@ if __name__ == "__main__":
             total_loss += nd.sum(loss).asscalar()
         print("Epoch %d, average loss: %f" % (e, total_loss/num_examples))
 
+    # if you want to get the weight , you need get dense first
     dense = net[0]
     true_w, dense.weight.data()
 

@@ -1,24 +1,31 @@
-
-from mxnet import autograd
 from mxnet import gluon
+import sys
+sys.path.append('..')
 from mxnet import ndarray as nd
-
+from mxnet import autograd
 import utils
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
+
+
+    # define the iterator of the data
     batch_size = 256
     train_data, test_data = utils.load_data_fashion_mnist(batch_size)
 
+    # define the model
     net = gluon.nn.Sequential()
     with net.name_scope():
         net.add(gluon.nn.Flatten())
+        net.add(gluon.nn.Dense(256, activation="relu"))
         net.add(gluon.nn.Dense(10))
     net.initialize()
 
+    # define the loss
     softmax_cross_entropy = gluon.loss.SoftmaxCrossEntropyLoss()
 
-    trainer = gluon.Trainer(net.collect_params(), 'sgd', {'learning_rate': 4})
-
+    # define the method about training
+    trainer = gluon.Trainer(net.collect_params(), 'sgd', {'learning_rate': 0.1})
 
     for epoch in range(5):
         train_loss = 0.

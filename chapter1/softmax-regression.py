@@ -1,15 +1,16 @@
 # -*-coding:utf-8-*-
 
 
-from mxnet import gluon
-from mxnet import nd
-from mxnet import ndarray as nd
 import sys
+
+from mxnet import gluon
+from mxnet import ndarray as nd
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 import matplotlib.pyplot as plt
 
-from chapter1.utils import SGD
+from utils import SGD
 from mxnet import autograd
 
 
@@ -35,6 +36,7 @@ def get_text_labels(label):
     return [text_labels[int(i)] for i in label ]
 
 def net(X):
+    # at this time , we seperate the process of softmax and the cross_entropy
     return softmax(nd.dot(X.reshape((-1, num_inputs)), W) + b)
 
 def cross_entropy(yhat, y):
